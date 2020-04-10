@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus", "Nexus.Program\Nexus.csproj", "{769DDBD7-E375-4E04-9386-C1AA99CC2263}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{769DDBD7-E375-4E04-9386-C1AA99CC2263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{769DDBD7-E375-4E04-9386-C1AA99CC2263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{769DDBD7-E375-4E04-9386-C1AA99CC2263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{769DDBD7-E375-4E04-9386-C1AA99CC2263}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
