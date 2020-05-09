@@ -53,7 +53,6 @@ namespace Nexus
             {
                 var type = scheduledTask.GetType();
                 var build = JobBuilder.Create(type).WithIdentity(type.Name + "_" + new Random().Next(1000)).Build();
-
                 var schedule = TriggerBuilder.Create().WithIdentity(type.Name + "_" + new Random().Next(1000))
                     .StartNow().WithSimpleSchedule(x =>
                         x.WithInterval(TimeSpan.FromMilliseconds(scheduledTask.RepeatEveryMilliseconds))

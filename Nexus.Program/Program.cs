@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Figgle;
 using Nexus.SDK;
 using Nexus.SDK.Modules;
 using Sentry;
@@ -24,7 +23,6 @@ namespace Nexus
             Startup();
 
             Console.Title = "Nexus";
-            Console.WriteLine(FiggleFonts.Doom.Render("NEXUS"));
             Console.WriteLine(
                 "|---------------------------------------------------------------------------------------------------------------------------|");
 
