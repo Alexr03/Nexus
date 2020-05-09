@@ -1,4 +1,6 @@
-﻿using Nexus.Commands;
+﻿using System.Net;
+using DSharpPlus.Net.WebSocket;
+using Nexus.Commands;
 using Nexus.SDK.Modules;
 using Nexus.Utilities;
 

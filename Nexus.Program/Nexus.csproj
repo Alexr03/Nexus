@@ -65,6 +65,10 @@
       <HintPath>..\packages\DSharpPlus.Interactivity.4.0.0-nightly-00681\lib\netstandard2.0\DSharpPlus.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DSharpPlus.WebSocket.WebSocket4Net, Version=4.0.0.653, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocket4Net.4.0.0-nightly-00653\lib\net45\DSharpPlus.WebSocket.WebSocket4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Figgle, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Figgle.0.3.0\lib\net45\Figgle.dll</HintPath>
       <Private>True</Private>
@@ -218,6 +222,10 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BuiltInCommands.cs" />

@@ -14,6 +14,18 @@ namespace Nexus.Commands
 {
     public class BuiltInCommands : BaseCommandModule
     {
+        [Command("Sudo")]
+        [RequireOwner]
+        public async Task Sudo(CommandContext ctx, DiscordUser user, [RemainingText] string command)
+        {
+            await ctx.TriggerTypingAsync();
+            var commandsNextExtension = ctx.CommandsNext;
+            var realCommand = commandsNextExtension.FindCommand(command, out var arguments);
+            var sudoCtx =
+                commandsNextExtension.CreateFakeContext(user, ctx.Channel, command, ctx.Prefix, realCommand);
+            await commandsNextExtension.ExecuteCommandAsync(sudoCtx);
+        }
+
         [Command("Icons")]
         public async Task Icons(CommandContext ctx)
         {
@@ -33,7 +45,7 @@ namespace Nexus.Commands
 
             await ctx.RespondAsync(embed: embed);
         }
-        
+
         [Command("author")]
         [Aliases("alexr03", "creator")]
         public async Task Author(CommandContext ctx)
@@ -88,7 +100,7 @@ namespace Nexus.Commands
             embed.AddField("LYHME Hosting", "https://LYHMEHosting.com", true);
             embed.AddField("LYHME Panel", "https://LYHMEPanel.com", true);
             embed.AddField("LYHME Community", "https://lyhme.net/", true);
-            
+
             await ctx.RespondAsync(embed: embed);
         }
 
@@ -107,7 +119,7 @@ namespace Nexus.Commands
             {
                 pages.Add(GeneratePageForModule(assembly));
             }
-            
+
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, pages);
         }
 
@@ -119,14 +131,15 @@ namespace Nexus.Commands
             {
                 Title = "Module: " + versionInfo.ProductName,
                 Color = DiscordColor.Blue,
-                Description = $"Description: {versionInfo.FileDescription}\nVersion: {versionInfo.FileVersion} | {versionInfo.ProductVersion}",
+                Description =
+                    $"Description: {versionInfo.FileDescription}\nVersion: {versionInfo.FileVersion} | {versionInfo.ProductVersion}",
                 Author = new DiscordEmbedBuilder.EmbedAuthor
                 {
                     Name = versionInfo.CompanyName,
                 },
                 Timestamp = DateTimeOffset.Now,
             };
-            
+
             return new Page(embed: embed);
         }
     }
