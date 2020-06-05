@@ -82,7 +82,7 @@ namespace Nexus
 
         private static async Task MainAsync()
         {
-            DiscordMain bot = new DiscordMain();
+            var bot = new DiscordMain();
             await bot.RunAsync();
 
             while (true)
@@ -146,11 +146,9 @@ namespace Nexus
                 }
             }
 
-            if (string.IsNullOrEmpty(NexusConfiguration.DiscordToken) || !NexusConfiguration.Prefixes.Any())
-            {
-                Console.WriteLine("Please fill out the NexusConfiguration file.");
-                Environment.Exit(0);
-            }
+            if (!string.IsNullOrEmpty(NexusConfiguration.DiscordToken) && NexusConfiguration.Prefixes.Any()) return;
+            Console.WriteLine("Please fill out the NexusConfiguration file.");
+            Environment.Exit(0);
         }
     }
 }

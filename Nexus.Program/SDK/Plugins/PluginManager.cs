@@ -6,16 +6,16 @@ namespace Nexus.SDK.Plugins
     {
         public IList<T> Plugins { get; }
         
-        public PluginManager(List<object> modules)
+        public PluginManager(IEnumerable<object> modules)
         {
             this.Plugins = ParseModules(modules);
         }
 
-        private IList<T> ParseModules(List<object> modules)
+        private static IList<T> ParseModules(IEnumerable<object> modules)
         {
             IList<T> realModules = new List<T>();
 
-            foreach (object module in modules)
+            foreach (var module in modules)
             {
                 if (module is T o)
                 {

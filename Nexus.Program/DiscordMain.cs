@@ -1,25 +1,21 @@
-﻿using System.Net;
-using DSharpPlus.Net.WebSocket;
+﻿using System;
+using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.CommandsNext.Exceptions;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Enums;
+using Sentry;
 using Nexus.Commands;
+using Nexus.Exceptions;
 using Nexus.SDK.Modules;
+using Nexus.SDK.Plugins;
 using Nexus.Utilities;
 
 namespace Nexus
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-    using DSharpPlus;
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.CommandsNext.Attributes;
-    using DSharpPlus.CommandsNext.Exceptions;
-    using DSharpPlus.Entities;
-    using DSharpPlus.Interactivity;
-    using DSharpPlus.Interactivity.Enums;
-    using Exceptions;
-    using SDK.Plugins;
-    using Sentry;
-
     public class DiscordMain
     {
         public static DiscordClient Client;
@@ -147,7 +143,7 @@ namespace Nexus
             }
         }
 
-        private Task CommandExecutionEvent(CommandExecutionEventArgs e)
+        private static Task CommandExecutionEvent(CommandExecutionEventArgs e)
         {
             return Task.Delay(0);
         }

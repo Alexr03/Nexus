@@ -8,7 +8,7 @@ namespace Nexus.Utilities
         public static DiscordClient DiscordClient => DiscordMain.Client;
         
         public static Logger Logger = new Logger("Nexus Information");
-
+        
         public static PluginRepository PluginRepository;
     }
 }

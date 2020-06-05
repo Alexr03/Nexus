@@ -13,7 +13,7 @@ namespace Nexus
 {
     public static class ModulesManager
     {
-        public static Logger Logger = new Logger("Modules Manager");
+        public static readonly Logger Logger = new Logger("Modules Manager");
         
         public static async Task ReloadModules()
         {
