@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Nexus.SDK;
 using Nexus.SDK.Modules;
 using Sentry;
+using Serilog;
 
 namespace Nexus
 {
@@ -47,7 +48,7 @@ namespace Nexus
                 return null;
 
             // check for assemblies already loaded
-            Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
             if (assembly != null)
             {
                 logger.LogDebugMessage("Loading " + assembly.FullName + " from: " + assembly.Location);
@@ -56,24 +57,22 @@ namespace Nexus
 
             // Try to load by filename - split out the filename of the full assembly name
             // and append the base path of the original assembly (ie. look in the same dir)
-            string filename = args.Name.Split(',')[0] + ".dll".ToLower();
+            var filename = args.Name.Split(',')[0] + ".dll".ToLower();
 
             var files = Directory.GetFiles(@".\ModuleDependencies", "*.dll", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {
-                if (file.Contains(filename))
+                if (!file.Contains(filename)) continue;
+                try
                 {
-                    try
-                    {
-                        logger.LogDebugMessage("Loading " + args.Name + " from: " + file);
-                        return Assembly.LoadFrom(file);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        return null;
-                    }
+                    logger.LogDebugMessage("Loading " + args.Name + " from: " + file);
+                    return Assembly.LoadFrom(file);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return null;
                 }
             }
 
@@ -137,6 +136,9 @@ namespace Nexus
 
         private static void Startup()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.Console()
+                .WriteTo.File("./Logs/Nexus/").CreateLogger();
+            
             var requiredDirectories = new[] {"./Modules", "./ModuleDependencies", "./Config", "./Shared"};
             foreach (var requiredDirectory in requiredDirectories)
             {
