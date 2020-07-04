@@ -22,6 +22,8 @@ namespace Nexus
 
         public static readonly NexusConfiguration NexusConfiguration =
             new NexusModuleConfiguration<NexusConfiguration>().GetConfiguration();
+        
+        public static Logger Logger = new Logger("DiscordBot");
 
         public DiscordMain()
         {
@@ -44,7 +46,7 @@ namespace Nexus
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 CaseSensitive = false,
-                EnableDefaultHelp = false
+                EnableDefaultHelp = false,
             };
 
             Client.UseInteractivity(
@@ -93,7 +95,7 @@ namespace Nexus
                     return true;
                 default:
                 {
-                    string sentryId = string.Empty;
+                    var sentryId = string.Empty;
                     if (NexusConfiguration.Diagnostics.EnableSendingDiagnostics)
                     {
                         sentryId = SentrySdk.CaptureException(e).ToString();

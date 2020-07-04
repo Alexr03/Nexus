@@ -19,25 +19,14 @@ namespace Nexus
 
         private static void Main(string[] args)
         {
+            Console.Title = "Nexus";
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
-            
             Startup();
 
-            Console.Title = "Nexus";
             Console.WriteLine(
                 "|---------------------------------------------------------------------------------------------------------------------------|");
 
-            if (NexusConfiguration.Diagnostics.EnableSendingDiagnostics)
-            {
-                using (SentrySdk.Init("https://e61f34cc7659497d91e322c2068a9659@sentry.openshift.alexr03.dev/2"))
-                {
-                    MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                }
-            }
-            else
-            {
-                MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            }
+            MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
@@ -137,7 +126,7 @@ namespace Nexus
         private static void Startup()
         {
             Log.Logger = new LoggerConfiguration().WriteTo.Console()
-                .WriteTo.File("./Logs/Nexus/").CreateLogger();
+                .WriteTo.File("./Logs/Nexus/Nexus.log").CreateLogger();
             
             var requiredDirectories = new[] {"./Modules", "./ModuleDependencies", "./Config", "./Shared"};
             foreach (var requiredDirectory in requiredDirectories)
