@@ -63,8 +63,11 @@ namespace Nexus.Commands
                 Description = "**The author of this super amazing Nexus Bot!**",
                 Url = "https://alexr03.dev",
                 Timestamp = DateTimeOffset.Now,
-                ThumbnailUrl =
-                    "https://cdn.discordapp.com/avatars/183270722548793344/c70eb5e8cb08e7f158227386aac9b972.png?size=128",
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url =
+                        "https://cdn.discordapp.com/avatars/183270722548793344/c70eb5e8cb08e7f158227386aac9b972.png?size=128",
+                },
                 Title = "Nexus Author"
             };
             embed.AddField("Github", "https://github.com/Alexr03", true);
@@ -92,8 +95,10 @@ namespace Nexus.Commands
                 Description = "Early Adopter of the **Nexus Bot**!",
                 Url = "https://lyhmehosting.com",
                 Timestamp = DateTimeOffset.Now,
-                ThumbnailUrl =
-                    "https://cdn.discordapp.com/attachments/190120046134034432/547496887930978334/nodrips.png",
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = "https://cdn.discordapp.com/attachments/190120046134034432/547496887930978334/nodrips.png",
+                },
                 Title = "LYHME Inc."
             };
             embed.AddField("LYHME.IO", "https://LYHME.io", true);
@@ -108,17 +113,10 @@ namespace Nexus.Commands
         public async Task ShowModules(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
-            List<Assembly> assemblies = new List<Assembly>();
-            foreach (var plugin in NexusInformation.PluginRepository.AssemblyModules.Plugins)
-            {
-                assemblies.Add(plugin.GetType().Assembly);
-            }
+            var assemblies = NexusInformation.PluginRepository.AssemblyModules.Plugins
+                .Select(plugin => plugin.GetType().Assembly).ToList();
 
-            List<Page> pages = new List<Page>();
-            foreach (var assembly in assemblies)
-            {
-                pages.Add(GeneratePageForModule(assembly));
-            }
+            var pages = assemblies.Select(GeneratePageForModule).ToList();
 
             await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.Member, pages);
         }
