@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -7,6 +8,7 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
+using DSharpPlus.Net.WebSocket;
 using Sentry;
 using Nexus.Commands;
 using Nexus.Exceptions;
@@ -31,7 +33,7 @@ namespace Nexus
             {
                 AutoReconnect = true,
                 LargeThreshold = 250,
-                LogLevel = LogLevel.Debug,
+                LogLevel = LogLevel.Critical,
                 Token = NexusConfiguration.DiscordToken,
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,

@@ -53,12 +53,29 @@ namespace Nexus.SDK.Plugins
                     .ToArray();
             try
             {
-                List<Assembly> assemblies = new List<Assembly>();
+                var assemblies = new List<Assembly>();
                 foreach (var assemblyFile in assemblyFiles)
                 {
-                    var assembly = Assembly.LoadFrom(assemblyFile);
-                    assembly.GetTypes();
-                    assemblies.Add(assembly);
+                    _logger.LogMessage(LogLevel.Critical, $"loading... {assemblyFile}");
+                    try
+                    {
+                        var assembly = Assembly.LoadFrom(assemblyFile);
+                        assembly.GetTypes();
+                        assemblies.Add(assembly);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogException(e);
+                        if (e is ReflectionTypeLoadException typeLoadException)
+                        {
+                            var loaderExceptions = typeLoadException.LoaderExceptions;
+
+                            foreach (var loaderException in loaderExceptions)
+                            {
+                                _logger.LogException(loaderException);
+                            }
+                        }
+                    }
                 }
 
                 var nexusModuleType = typeof(NexusModule);
