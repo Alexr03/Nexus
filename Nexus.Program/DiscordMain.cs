@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
+using Alexr03.Common.Configuration;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -8,13 +8,12 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
-using DSharpPlus.Net.WebSocket;
-using Sentry;
+using Microsoft.Extensions.Logging;
 using Nexus.Commands;
 using Nexus.Exceptions;
-using Nexus.SDK.Modules;
 using Nexus.SDK.Plugins;
 using Nexus.Utilities;
+using Serilog;
 
 namespace Nexus
 {
@@ -23,8 +22,8 @@ namespace Nexus
         public static DiscordClient Client;
 
         public static readonly NexusConfiguration NexusConfiguration =
-            new NexusModuleConfiguration<NexusConfiguration>().GetConfiguration();
-        
+            new LocalConfiguration<NexusConfiguration>().GetConfiguration();
+
         public static Logger Logger = new Logger("DiscordBot");
 
         public DiscordMain()
@@ -33,11 +32,10 @@ namespace Nexus
             {
                 AutoReconnect = true,
                 LargeThreshold = 250,
-                LogLevel = LogLevel.Critical,
+                MinimumLogLevel = LogLevel.Debug,
                 Token = NexusConfiguration.DiscordToken,
                 TokenType = TokenType.Bot,
-                UseInternalLogHandler = true,
-                MessageCacheSize = 2048,
+                MessageCacheSize = 2048
             };
 
             Client = new DiscordClient(discordConfig);
@@ -48,7 +46,7 @@ namespace Nexus
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 CaseSensitive = false,
-                EnableDefaultHelp = false,
+                EnableDefaultHelp = false
             };
 
             Client.UseInteractivity(
@@ -97,12 +95,6 @@ namespace Nexus
                     return true;
                 default:
                 {
-                    var sentryId = string.Empty;
-                    if (NexusConfiguration.Diagnostics.EnableSendingDiagnostics)
-                    {
-                        sentryId = SentrySdk.CaptureException(e).ToString();
-                    }
-
                     switch (e.Message)
                     {
                         case "Could not find a suitable overload for the command.":
@@ -120,14 +112,9 @@ namespace Nexus
                                     customMessage.Context = ctx;
 
                                     if (!string.IsNullOrEmpty(customMessage.Message))
-                                    {
                                         await ctx.RespondAsync(customMessage.Message);
-                                    }
 
-                                    if (customMessage.Embed != null)
-                                    {
-                                        await ctx.RespondAsync(embed: customMessage.Embed);
-                                    }
+                                    if (customMessage.Embed != null) await ctx.RespondAsync(embed: customMessage.Embed);
 
 #pragma warning disable 4014
                                     Task.Run(async () => await customMessage.DoAction());
@@ -138,7 +125,8 @@ namespace Nexus
 
                             if (NexusConfiguration.Diagnostics.EnableSendingDiagnostics)
                             {
-                                await ctx.RespondAsync("Exception caught! - **Sentry ID: " + sentryId + "**\n");
+                                Log.Error(e, e.Message);
+                                await ctx.RespondAsync("Error occurred!");
                             }
 
                             return false;
@@ -165,7 +153,6 @@ namespace Nexus
             if (exceptionHandled) return;
 
             if (e.Exception is ChecksFailedException cfe)
-            {
                 foreach (var ex in cfe.FailedChecks)
                     switch (ex)
                     {
@@ -174,7 +161,6 @@ namespace Nexus
                                 $"Cooldown: **{cooldown.GetRemainingCooldown(e.Context).Seconds}s**");
                             return;
                     }
-            }
         }
     }
 }

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DSharpPlus;
+using Microsoft.Extensions.Logging;
 using Nexus.SDK.Modules;
 
 namespace Nexus.SDK.Plugins
@@ -56,7 +56,7 @@ namespace Nexus.SDK.Plugins
                 var assemblies = new List<Assembly>();
                 foreach (var assemblyFile in assemblyFiles)
                 {
-                    _logger.LogMessage(LogLevel.Critical, $"loading... {assemblyFile}");
+                    _logger.LogMessage(LogLevel.Debug, $"loading... {assemblyFile}");
                     try
                     {
                         var assembly = Assembly.LoadFrom(assemblyFile);
@@ -70,10 +70,7 @@ namespace Nexus.SDK.Plugins
                         {
                             var loaderExceptions = typeLoadException.LoaderExceptions;
 
-                            foreach (var loaderException in loaderExceptions)
-                            {
-                                _logger.LogException(loaderException);
-                            }
+                            foreach (var loaderException in loaderExceptions) _logger.LogException(loaderException);
                         }
                     }
                 }
@@ -89,7 +86,8 @@ namespace Nexus.SDK.Plugins
             }
             catch (BadImageFormatException image)
             {
-                _logger.LogMessage(LogLevel.Error, $"{image.FileName} is a bad image. Ensure this file is compiled with .NET 4.6.1 and 64bit compatible.");
+                _logger.LogMessage(LogLevel.Error,
+                    $"{image.FileName} is a bad image. Ensure this file is compiled with .NET 4.6.1 and 64bit compatible.");
             }
             catch (Exception e)
             {
@@ -99,16 +97,10 @@ namespace Nexus.SDK.Plugins
                 {
                     var loaderExceptions = typeLoadException.LoaderExceptions;
 
-                    foreach (var loaderException in loaderExceptions)
-                    {
-                        _logger.LogException(loaderException);
-                    }
+                    foreach (var loaderException in loaderExceptions) _logger.LogException(loaderException);
                 }
 
-                if (e.InnerException != null)
-                {
-                    _logger.LogException(e.InnerException);
-                }
+                if (e.InnerException != null) _logger.LogException(e.InnerException);
             }
 
             return modules;

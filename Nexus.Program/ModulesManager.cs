@@ -1,20 +1,16 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using Nexus.SDK.Modules;
+using FluentScheduler;
 using Nexus.SDK.Plugins;
-using Quartz;
-using Quartz.Impl;
 
 namespace Nexus
 {
     public static class ModulesManager
     {
         public static readonly Logger Logger = new Logger("Modules Manager");
-        
+        public static readonly Registry Registry = new Registry();
+
         public static async Task ReloadModules()
         {
             try
@@ -29,7 +25,7 @@ namespace Nexus
                 PrintModuleMessage("GLOBAL", e.StackTrace);
             }
         }
-        
+
         private static void RefreshAssemblyModules()
         {
             foreach (var module in PluginRepository.Instance.AssemblyModules.Plugins)
@@ -43,24 +39,11 @@ namespace Nexus
 
         private static async Task RefreshCronScheduler()
         {
-            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
-            await scheduler.Clear();
-            await scheduler.Start();
-
-            scheduler.Context.Put("Client", DiscordMain.Client);
-
             foreach (var scheduledTask in PluginRepository.Instance.ScheduledTasksModules.Plugins)
             {
-                var type = scheduledTask.GetType();
-                var build = JobBuilder.Create(type).WithIdentity(type.Name + "_" + new Random().Next(1000)).Build();
-                var schedule = TriggerBuilder.Create().WithIdentity(type.Name + "_" + new Random().Next(1000))
-                    .StartNow().WithSimpleSchedule(x =>
-                        x.WithInterval(TimeSpan.FromMilliseconds(scheduledTask.RepeatEveryMilliseconds))
-                            .RepeatForever())
-                    .Build();
-
-                await scheduler.ScheduleJob(build, schedule);
-                Logger.LogMessage("[Cron Scheduler] Scheduled " + type.Name + " to fire every " +
+                Registry.Schedule(scheduledTask).ToRunNow().AndEvery(scheduledTask.RepeatEveryMilliseconds)
+                    .Milliseconds();
+                Logger.LogMessage("[Cron Scheduler] Scheduled " + scheduledTask.GetType().Name + " to fire every " +
                                   scheduledTask.RepeatEveryMilliseconds + "ms");
             }
         }

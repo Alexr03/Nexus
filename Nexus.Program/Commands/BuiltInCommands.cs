@@ -34,7 +34,7 @@ namespace Nexus.Commands
                 Author = new DiscordEmbedBuilder.EmbedAuthor()
                 {
                     Name = "Icons Copyright",
-                    Url = "https://icons8.com/",
+                    Url = "https://icons8.com/"
                 },
                 Color = DiscordColor.PhthaloGreen,
                 Description = "**All icons goto their respective owners from https://icons8.com**",
@@ -66,7 +66,7 @@ namespace Nexus.Commands
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
                     Url =
-                        "https://cdn.discordapp.com/avatars/183270722548793344/c70eb5e8cb08e7f158227386aac9b972.png?size=128",
+                        "https://cdn.discordapp.com/avatars/183270722548793344/c70eb5e8cb08e7f158227386aac9b972.png?size=128"
                 },
                 Title = "Nexus Author"
             };
@@ -97,7 +97,7 @@ namespace Nexus.Commands
                 Timestamp = DateTimeOffset.Now,
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
-                    Url = "https://cdn.discordapp.com/attachments/190120046134034432/547496887930978334/nodrips.png",
+                    Url = "https://cdn.discordapp.com/attachments/190120046134034432/547496887930978334/nodrips.png"
                 },
                 Title = "LYHME Inc."
             };
@@ -133,9 +133,9 @@ namespace Nexus.Commands
                     $"Description: {versionInfo.FileDescription}\nVersion: {versionInfo.FileVersion} | {versionInfo.ProductVersion}",
                 Author = new DiscordEmbedBuilder.EmbedAuthor
                 {
-                    Name = versionInfo.CompanyName,
+                    Name = versionInfo.CompanyName
                 },
-                Timestamp = DateTimeOffset.Now,
+                Timestamp = DateTimeOffset.Now
             };
 
             return new Page(embed: embed);

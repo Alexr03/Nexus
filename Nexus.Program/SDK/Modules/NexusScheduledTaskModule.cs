@@ -1,33 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using DSharpPlus;
-using Quartz;
+﻿using System.Threading.Tasks;
+using FluentScheduler;
 
 namespace Nexus.SDK.Modules
 {
-    public class NexusScheduledTaskModule : NexusModule, IJob
+    public abstract class NexusScheduledTaskModule : IJob
     {
-        public DiscordClient DiscordClient { get; private set; }
+        public int RepeatEveryMilliseconds { get; set; }
 
-        public int RepeatEveryMilliseconds;
-
-        public async Task Execute(IJobExecutionContext context)
+        public void Execute()
         {
-            var logger = new Logger("NexusScheduledTaskModule_Execute");
-
-            try
-            {
-                DiscordClient = (DiscordClient) context.Scheduler.Context.Get("Client");
-                await DoAction(context);
-            }
-            catch (Exception e)
-            {
-                logger.LogException(e);
-            }
+            Task.Run(async () => await DoAction());
         }
 
-        public virtual async Task DoAction(IJobExecutionContext context)
-        {
-        }
+        public abstract Task DoAction();
     }
 }

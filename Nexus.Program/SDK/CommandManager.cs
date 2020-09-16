@@ -1,4 +1,4 @@
-﻿﻿﻿namespace Nexus.SDK
+﻿namespace Nexus.SDK
 {
     using System;
 

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
+using Alexr03.Common.Configuration;
 using Nexus.SDK;
-using Nexus.SDK.Modules;
-using Sentry;
 using Serilog;
 
 namespace Nexus
@@ -13,59 +11,19 @@ namespace Nexus
     internal static class Program
     {
         public static bool Debug;
-        
+
         public static readonly NexusConfiguration NexusConfiguration =
-            new NexusModuleConfiguration<NexusConfiguration>().GetConfiguration();
+            new LocalConfiguration<NexusConfiguration>().GetConfiguration();
 
         private static void Main(string[] args)
         {
             Console.Title = "Nexus";
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
             Startup();
 
             Console.WriteLine(
                 "|---------------------------------------------------------------------------------------------------------------------------|");
 
             MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        }
-
-        public static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var logger = new Logger("Dependency Loader");
-            // Ignore missing resources
-            if (args.Name.Contains(".resources"))
-                return null;
-
-            // check for assemblies already loaded
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
-            if (assembly != null)
-            {
-                logger.LogDebugMessage("Loading " + assembly.FullName + " from: " + assembly.Location);
-                return assembly;
-            }
-
-            // Try to load by filename - split out the filename of the full assembly name
-            // and append the base path of the original assembly (ie. look in the same dir)
-            var filename = args.Name.Split(',')[0] + ".dll".ToLower();
-
-            var files = Directory.GetFiles(@".\ModuleDependencies", "*.dll", SearchOption.AllDirectories);
-
-            foreach (var file in files)
-            {
-                if (!file.Contains(filename)) continue;
-                try
-                {
-                    logger.LogDebugMessage("Loading " + args.Name + " from: " + file);
-                    return Assembly.LoadFrom(file);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    return null;
-                }
-            }
-
-            return null;
         }
 
         private static async Task MainAsync()
@@ -127,15 +85,11 @@ namespace Nexus
         {
             Log.Logger = new LoggerConfiguration().WriteTo.Console()
                 .WriteTo.File("./Logs/Nexus/Nexus.log").CreateLogger();
-            
-            var requiredDirectories = new[] {"./Modules", "./ModuleDependencies", "./Config", "./Shared"};
+
+            var requiredDirectories = new[] {"./Modules", "./Shared"};
             foreach (var requiredDirectory in requiredDirectories)
-            {
                 if (!Directory.Exists(requiredDirectory))
-                {
                     Directory.CreateDirectory(requiredDirectory);
-                }
-            }
 
             if (!string.IsNullOrEmpty(NexusConfiguration.DiscordToken) && NexusConfiguration.Prefixes.Any()) return;
             Console.WriteLine("Please fill out the NexusConfiguration file.");

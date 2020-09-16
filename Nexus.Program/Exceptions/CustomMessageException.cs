@@ -9,14 +9,13 @@ namespace Nexus.Exceptions
     {
         public CustomMessageException()
         {
-            
         }
 
         public CustomMessageException(DiscordEmbed embed)
         {
-            this.Embed = embed;
+            Embed = embed;
         }
-        
+
         public CustomMessageException(string message)
         {
             Message = message;
@@ -30,7 +29,7 @@ namespace Nexus.Exceptions
         public override string Message { get; }
 
         public CommandContext Context;
-        
+
         public DiscordEmbed Embed { get; set; }
 
         public bool Handled { get; set; } = true;

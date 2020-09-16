@@ -1,23 +1,22 @@
 ﻿using System;
-using DSharpPlus;
-using Nexus.Utilities;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Nexus
 {
     public class Logger
     {
         private readonly string _application;
-        
+
         private readonly Serilog.Core.Logger _logger;
-        
+
         public Logger(string application)
         {
             _application = application;
 
-            var consoleOutputTemplate = $"[{application}" + " {Timestamp:HH:mm:ss.ff} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+            var consoleOutputTemplate =
+                $"[{application}" + " {Timestamp:HH:mm:ss.ff} {Level:u3}] {Message:lj}{NewLine}{Exception}";
             var loggerConfiguration = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate: consoleOutputTemplate)
                 .WriteTo.File($"./Logs/{application}/{application}.log", rollingInterval: RollingInterval.Day);
@@ -27,9 +26,9 @@ namespace Nexus
 
         public void LogMessage(string message)
         {
-            LogMessage(LogLevel.Info, message);
+            LogMessage(LogLevel.Information, message);
         }
-        
+
         public void LogDebugMessage(string message)
         {
             LogMessage(LogLevel.Debug, message);
@@ -47,7 +46,7 @@ namespace Nexus
                     _logger.Debug(message);
                     LogReceived?.Invoke(LogEventLevel.Debug, _logger, message, _application);
                     break;
-                case LogLevel.Info:
+                case LogLevel.Information:
                     _logger.Information(message);
                     LogReceived?.Invoke(LogEventLevel.Information, _logger, message, _application);
                     break;
@@ -63,25 +62,27 @@ namespace Nexus
                     throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
             }
         }
-        
+
         public void LogMessage(LogEventLevel logLevel, string message)
         {
             _logger.Write(logLevel, message);
             LogReceived?.Invoke(logLevel, _logger, message, _application);
         }
-        
+
         public void LogException(Exception exception)
         {
             _logger.Write(LogEventLevel.Error, exception, exception.Message);
             LogExceptionReceived?.Invoke(LogEventLevel.Error, _logger, exception, _application);
         }
-        
+
         public static event LogRaised LogReceived;
 
         public static event LogExceptionRaised LogExceptionReceived;
-        
-        public delegate void LogRaised(LogEventLevel logLevel, Serilog.Core.Logger logger, string message, string application);
-        
-        public delegate void LogExceptionRaised(LogEventLevel logLevel, Serilog.Core.Logger logger, Exception exception, string application);
+
+        public delegate void LogRaised(LogEventLevel logLevel, Serilog.Core.Logger logger, string message,
+            string application);
+
+        public delegate void LogExceptionRaised(LogEventLevel logLevel, Serilog.Core.Logger logger, Exception exception,
+            string application);
     }
 }
